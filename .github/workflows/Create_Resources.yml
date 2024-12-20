@@ -18,7 +18,7 @@ jobs:
     - name: Configure AWS credentials using OIDC
       uses: dflook/configure-oidc-aws-credentials@v1.0.0
       with:
-        role-arn: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+        role-arn: "arn:aws:iam::156041431048:role/GitHubActionsOIDC"
         sts-region: ${{ secrets.AWS_REGION }}
         audience: "sts.amazonaws.com" # Correct audience value
 
