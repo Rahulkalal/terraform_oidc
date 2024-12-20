@@ -131,24 +131,3 @@ resource "aws_security_group" "web_sg" {
   }
 }
 
-# EC2 Instances
-resource "aws_instance" "web" {
-  count         = 2
-  ami           = "ami-0c02fb55956c7d316" # Amazon Linux 2 AMI
-  instance_type = "t2.micro"
-  subnet_id     = aws_subnet.public[count.index].id
-  security_groups = [aws_security_group.web_sg.name]
-
-  user_data = <<-EOF
-              #!/bin/bash
-              yum update -y
-              yum install -y httpd
-              systemctl start httpd
-              systemctl enable httpd
-              echo "<h1>Welcome to Web Server ${count.index}</h1>" > /var/www/html/index.html
-              EOF
-
-  tags = {
-    Name = "web-instance-${count.index}"
-  }
-}
