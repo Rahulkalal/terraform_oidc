@@ -1,0 +1,44 @@
+name: AWS OIDC Terraform Destroy
+
+on:
+  workflow_dispatch:
+
+env:
+  AWS_REGION: "us-east-1"   
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  destroy:
+    name: 'Terraform Destroy'
+    runs-on: ubuntu-latest
+    environment: oidc
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v4.0.2
+        with:
+          role-to-assume: arn:aws:iam::156041431048:role/GitHubActionsOIDC  # Your actual Role ARN
+          aws-region: ${{ env.AWS_REGION }}
+          audience: sts.amazonaws.com
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan (Destroy)
+        run: terraform plan -destroy -out=tfplan.out
+
+      - name: Terraform Apply (Destroy)
+        run: terraform apply -auto-approve tfplan.out
