@@ -18,10 +18,11 @@ jobs:
     - name: Configure AWS credentials using OIDC
       uses: dflook/configure-oidc-aws-credentials@v1.0.0
       with:
-        role-arn: ${{ secrets.AWS_ROLE_TO_ASSUME }}  # Corrected: Use role-arn
-        sts-region: ${{ secrets.AWS_REGION }}        # Corrected: Use sts-region
+        role-arn: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+        sts-region: ${{ secrets.AWS_REGION }}
+        audience: "sts.amazonaws.com" # Correct audience value
 
-    # Step : Set up Terraform
+    # Step: Set up Terraform
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
